@@ -1,0 +1,17 @@
+{
+	"name": "create_internal_table_dedicated_sql_pool",
+	"properties": {
+		"content": {
+			"query": "CREATE SCHEMA Sales;\n\nCREATE TABLE Sales.Orders\n(\n    ORDERNUMBER INT,\n    QUANTITYORDERED INT,\n    PRICEEACH FLOAT,\n    ORDERLINENUMBER INT,\n    SALES FLOAT,\n    ORDERDATE VARCHAR(50),\n    STATUS VARCHAR(50),\n    QTR_ID INT,\n    MONTH_ID INT,\n    YEAR_ID INT\n);\n\nDrop table Sales.;\n\nCOPY INTO Sales.Orders\nFROM 'https://adlssaccountak.blob.core.windows.net/synapse-data/synapse/orders_dataset.csv'\nWITH (\n    FILE_TYPE = 'CSV',\n    FIELDTERMINATOR = ',',\n    FIELDQUOTE = '\"',\n    FIRSTROW = 2,\n    ENCODING = 'UTF8'\n);\n\nSELECT COUNT(*) FROM Sales.Orders;\n\nSELECT TOP 5 * FROM Sales.Orders;",
+			"metadata": {
+				"language": "sql"
+			},
+			"currentConnection": {
+				"databaseName": "dedicateddemosqlpool",
+				"poolName": "dedicateddemosqlpool"
+			},
+			"resultLimit": 5000
+		},
+		"type": "SqlQuery"
+	}
+}

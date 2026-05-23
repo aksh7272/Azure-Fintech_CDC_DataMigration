@@ -1,0 +1,17 @@
+{
+	"name": "SQL script 3",
+	"properties": {
+		"content": {
+			"query": "select * from airbnb.customer_dim;\n\nCREATE MASTER KEY ENCRYPTION BY PASSWORD = 'AkDataSkills@123';\nOPEN MASTER KEY DECRYPTION BY PASSWORD = 'AkDataSkills@123';\n",
+			"metadata": {
+				"language": "sql"
+			},
+			"currentConnection": {
+				"databaseName": "airbnb_dwh",
+				"poolName": "airbnb_dwh"
+			},
+			"resultLimit": 5000
+		},
+		"type": "SqlQuery"
+	}
+}

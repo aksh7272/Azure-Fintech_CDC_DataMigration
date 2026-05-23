@@ -1,0 +1,70 @@
+{
+	"name": "Dataflow",
+	"properties": {
+		"type": "MappingDataFlow",
+		"typeProperties": {
+			"sources": [
+				{
+					"dataset": {
+						"referenceName": "DelimitedText1",
+						"type": "DatasetReference"
+					},
+					"name": "rawdata"
+				}
+			],
+			"sinks": [
+				{
+					"dataset": {
+						"referenceName": "CosmosDbNoSqlContainer",
+						"type": "DatasetReference"
+					},
+					"name": "sink"
+				}
+			],
+			"transformations": [
+				{
+					"name": "filter"
+				},
+				{
+					"name": "aggregate1"
+				}
+			],
+			"scriptLines": [
+				"source(output(",
+				"          ORDERNUMBER as string,",
+				"          QUANTITYORDERED as string,",
+				"          PRICEEACH as string,",
+				"          ORDERLINENUMBER as string,",
+				"          SALES as string,",
+				"          ORDERDATE as string,",
+				"          STATUS as string,",
+				"          QTR_ID as string,",
+				"          MONTH_ID as string,",
+				"          YEAR_ID as string",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     ignoreNoFilesFound: false) ~> rawdata",
+				"rawdata filter(SALES>='2000') ~> filter",
+				"filter aggregate(groupBy(YEAR_ID,",
+				"          MONTH_ID),",
+				"     TOTAL_SALES = sum(iif(isInteger(SALES), toInteger(SALES), 0))) ~> aggregate1",
+				"aggregate1 sink(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     input(",
+				"          emp_id as string,",
+				"          first_name as string,",
+				"          last_name as string,",
+				"          department as string",
+				"     ),",
+				"     deletable:false,",
+				"     insertable:true,",
+				"     updateable:false,",
+				"     upsertable:false,",
+				"     format: 'document',",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true) ~> sink"
+			]
+		}
+	}
+}
